@@ -6,6 +6,15 @@
 <title>AMGDevPro - High Performance Web Development</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <style>
+  /*Active nav item styling */
+      .active-nav .nav-underline {
+        width: 100% ,
+          }
+      .active-nav {
+        color: #111827;
+        font-weight: 500;
+      }
+  
   /* Custom scrollbar for code block */
   code::-webkit-scrollbar {
     height: 8px;
@@ -163,17 +172,131 @@
       </svg>
     </button>
     <nav>
-      <ul id="nav-list" class="hidden md:flex md:items-center md:space-x-5 font-mono text-xs tracking-widest select-none">
-        <li><button data-target="home" class="nav-btn">Home</button></li>
-        <li><button data-target="about" class="nav-btn">About Us</button></li>
-        <li><button data-target="portfolio" class="nav-btn">Portfolio</button></li>
-        <li><button data-target="contact" class="nav-btn">Contact Us</button></li>
-        <li><button data-target="login" class="nav-btn text-sm">LOGIN</button></li>
-        <li><button data-target="signup" class="btn-primary">SIGN UP</button></li>
+        <ul id="nav-list" class="hidden md:flex md:items-center md:space-x-8 font-mono text-xs tracking-widest select-none">
+      <li class="relative group">
+      <a href="#home" class="nav-btn pb-1 hover:text-gray-800">Home</a>
+      <div class="absolute bottom-0 left-0 w-0 h-px bg-gray-800 group-hover:w-full transition-all duration-300"></div>
+      </li>
+      <li class="relative group">
+      <a href="#about" class="nav-btn pb-1 hover:text-gray-800">About Us</a>
+      <div class="absolute bottom-0 left-0 w-0 h-px bg-gray-800 group-hover:w-full transition-all duration-300"></div>
+      </li>
+      <li class="relative group">
+      <a href="#portfolio" class="nav-btn pb-1 hover:text-gray-800">Portfolio</a>
+      <div class="absolute bottom-0 left-0 w-0 h-px bg-gray-800 group-hover:w-full transition-all duration-300"></div>
+      </li>
+      <li class="relative group">
+      <a href="#contact" class="nav-btn pb-1 hover:text-gray-800">Contact Us</a>
+      <div class="absolute bottom-0 left-0 w-0 h-px bg-gray-800 group-hover:w-full transition-all duration-300"></div>
+      </li>
+      <li class="relative group">
+      <a href="#login" class="btn-primary text-sm pb-1 hover:text-gray-800">LOGIN</a>
+      <div class="absolute bottom-0 left-0 w-0 h-px bg-gray-800 group-hover:w-full transition-all duration-300"></div>
+      </li>
+      <li class="relative group">
+      <a href="#signup" class="btn-primary pb-1 hover:text-gray-800">SIGN UP</a>
+      <div class="absolute bottom-0 left-0 w-0 h-px bg-gray-800 group-hover:w-full transition-all duration-300"></div>
+       </li>
       </ul>
     </nav>
+    <style>
+  .nav-btn {
+    transition: color 0.3s ease;
+  }
+  
+  .btn-primary {
+    transition: all 0.3s ease;
+  }
+</style>
+
+
+<style>
+  .nav-button {
+    transition: color 0.3s ease;
+  }
+
+  .btn-primary {
+
+  transition: all 0.3s ease;
+  }
+
+   /* Active state styling */
+  .active-nav {
+    color: #1f2937; /* gray-800 */
+    font-weight: 600;
+  }
+
+  .active-underline {
+    width: 100% ;
+  }
+  </style>
   </div>
 </header>
+
+  <script>
+ document.addEventListener('DOMContentLoaded', function() {
+        // Set the default active section to home
+        const defaultSection = 'home';
+        setActiveSection(defaultSection);
+        // Add active nav styling to home link by default
+        const homeLink = document.querySelector('[data-section="home"]');
+        if (homeLink) {
+            homeLink.classList.add('active-nav');
+            const homeUnderline = homeLink.nextElementSibling;
+            if (homeUnderline) {
+                homeUnderline.classList.add('active-underline');
+            }
+        }
+        // Set up click handlers for navigation links
+        document.querySelectorAll('[data-section]').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                const section = this.getAttribute('data-section');
+                setActiveSection(section);
+                // Update the URL hash
+                window.location.hash = section;
+            });
+        });
+
+               });
+
+        // Define setActiveSection function to handle navigation and section display
+        function setActiveSection(section) {
+            // Remove active state from all nav links and underlines
+            document.querySelectorAll('.nav-btn').forEach(link => {
+                link.classList.remove('active-nav');
+                const underline = link.nextElementSibling;
+                if (underline) {
+                    underline.classList.remove('active-underline');
+                }
+            });
+            // Add active states to current section
+            if (section) {
+                const activeLink = document.querySelector(`a.nav-btn[href="#${section}"]`);
+                if (activeLink) {
+                    activeLink.classList.add('active-nav');
+                    const underline = activeLink.nextElementSibling;
+                    if (underline) {
+                        underline.classList.add('active-underline');
+                    }
+                }
+            }
+            // Show the corresponding section and hide others
+            document.querySelectorAll('.section-container').forEach(sectionEl => {
+                sectionEl.classList.remove('active');
+                sectionEl.classList.add('hidden');
+                if (sectionEl.id === section) {
+                    sectionEl.classList.add('active');
+                    sectionEl.classList.remove('hidden');
+                }
+            });
+            // Special case: show home section if section is 'home'
+            if (section === 'home') {
+                document.getElementById('home').classList.remove('hidden');
+                document.getElementById('home').classList.add('active');
+            }
+        }
+</script>
 
 <main class="max-w-5xl mx-auto px-6 py-10 md:py-20">
 
@@ -192,7 +315,7 @@
     </p>
     <div class="flex justify-center space-x-6 mt-8">
       <button class="btn-primary" id="btn-get-started">➤ Get Started</button>
-      <button class="btn-secondary" id="btn-talk-expert">➤ Talk to an Expert</button>
+      <button class="btn-primary" id="btn-talk-expert">➤ Talk to an Expert</button>
     </div>
   </section>
 
