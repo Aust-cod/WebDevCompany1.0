@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>AMGDevPro - High Performance Web Development</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  /* Custom scrollbar for code block */
+  code::-webkit-scrollbar {
+    height: 8px;
+  }
+  code::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  code::-webkit-scrollbar-thumb {
+    background-color: #6b7280; 
+    border-radius: 4px;
+  }
+
+  /* Navigation Animation */
+  nav ul li button {
+    position: relative;
+    overflow: hidden;
+    transition: color 0.3s ease;
+  }
+  nav ul li button::after {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    background: #111827;
+    bottom: 0;
+    left: -100%;
+    transition: left 0.3s ease;
+  }
+  nav ul li button:focus::after,
+  nav ul li button:hover::after {
+    left: 0;
+  }
+
+  /* Section fade-in animation */
+  .fade-enter {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Buttons shadow and transition */
+  .btn-primary {
+    background-color: #111827; /* bg-gray-900 */
+    color: #fff; /* text-white */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+    text-transform: uppercase; /* uppercase */
+    padding-left: 1.5rem; /* px-6 */
+    padding-right: 1.5rem;
+    padding-top: 0.5rem; /* py-2 */
+    padding-bottom: 0.5rem;
+    border-radius: 0.5rem; /* rounded */
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05); /* shadow-lg */
+    transition: background 0.3s ease-in-out;
+  }
+  .btn-primary:hover {
+    background-color: #000; /* hover:bg-black */
+  }
+  .btn-secondary {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* font-mono */
+    text-transform: uppercase; /* uppercase */
+    color: #111827; /* text-gray-900 */
+    padding-left: 1.5rem; /* px-6 */
+    padding-right: 1.5rem;
+    padding-top: 0.5rem; /* py-2 */
+    padding-bottom: 0.5rem;
+    border-radius: 0.5rem; /* rounded */
+    transition: all 0.3s;
+  }
+  .btn-secondary:hover {
+    text-decoration: underline; /* hover:underline */
+  }
+
+  /* Logo style */
+  .logo-svg path {
+    fill: #111827;
+  }
+
+  /* Responsive menu for mobile */
+  #mobile-menu-button {
+    display: none;
+  }
+  @media (max-width: 768px) {
+    #mobile-menu-button {
+      display: inline-flex;
+    }
+    nav ul {
+      display: none;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    nav ul.show {
+      display: flex;
+    }
+  }
+
+  /* Globe and nodes */
+  .globe-container {
+    position: relative;
+    width: 360px;
+    height: 360px;
+    margin: 2rem auto 3rem;
+    overflow: hidden;
+  }
+  .globe-svg {
+    stroke: #d1d5db;
+    stroke-width: 1;
+  }
+  .node {
+    position: absolute;
+    border: 3px solid white;
+    background-color: #374151;
+    border-radius: 8px;
+    width: 64px;
+    height: 40px;
+    filter: drop-shadow(0 0 3px rgba(0,0,0,0.3));
+    transition: transform 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .node img {
+    max-height: 26px;
+    filter: brightness(0.8);
+  }
+
+  /* Fade in container */
+  .section-container {
+    opacity: 0;
+    transition: opacity 0.6s ease;
+  }
+  .section-container.active {
+    opacity: 1;
+  }
+</style>
+</head>
+<body class="bg-gray-50 font-sans text-gray-900 leading-relaxed">
+
+<header class="w-full bg-gray-100 shadow-md sticky top-0 z-30">
+  <div class="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+    <a href="#" aria-label="WebDevPro logo" class="flex items-center space-x-2">
+      <svg class="logo-svg w-7 h-7" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false" >
+        <path d="M12 2L19 8v8l-7 6-7-6V8l7-6z" />
+        <path d="M5 12h14" stroke="#111827" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="font-bold text-lg select-none">AMG Web Dev</span>
+    </a>
+    <button id="mobile-menu-button" aria-label="Toggle menu" aria-expanded="false" class="md:hidden focus:outline-none">
+      <svg class="w-8 h-8" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 8h16M4 16h16"/>
+      </svg>
+    </button>
+    <nav>
+      <ul id="nav-list" class="hidden md:flex md:items-center md:space-x-5 font-mono text-xs tracking-widest select-none">
+        <li><button data-target="home" class="nav-btn">Home</button></li>
+        <li><button data-target="about" class="nav-btn">About Us</button></li>
+        <li><button data-target="portfolio" class="nav-btn">Portfolio</button></li>
+        <li><button data-target="contact" class="nav-btn">Contact Us</button></li>
+        <li><button data-target="login" class="nav-btn text-sm">LOGIN</button></li>
+        <li><button data-target="signup" class="btn-primary">SIGN UP</button></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main class="max-w-5xl mx-auto px-6 py-10 md:py-20">
+
+  <!-- NEWS BAR -->
+  <div aria-live="polite" class="bg-amber-100 text-amber-700 font-mono uppercase text-xs tracking-wide text-center rounded py-1 px-3 max-w-[520px] mx-auto mb-12 select-none">
+    ➤ NEWS: AMG WEB DEV PRO PLATFORM LAUNCHING SOON! ➤
+  </div>
+
+  <!-- Hero Section -->
+  <section id="home" class="text-center space-y-4 max-w-3xl mx-auto">
+    <h1 class="text-4xl md:text-5xl font-extrabold uppercase font-sans tracking-tight leading-tight">
+      Cutting-Edge <br /> Web Development <br /> Solutions
+    </h1>
+    <p class="text-base md:text-lg max-w-xl mx-auto text-gray-700">
+      Build blazing fast, scalable, and beautiful websites with our all-in-one platform. Deploy, manage, and scale your projects effortlessly.
+    </p>
+    <div class="flex justify-center space-x-6 mt-8">
+      <button class="btn-primary" id="btn-get-started">➤ Get Started</button>
+      <button class="btn-secondary" id="btn-talk-expert">➤ Talk to an Expert</button>
+    </div>
+  </section>
+
+  <!-- Globe with nodes (Interactive style) -->
+  <div class="globe-container hidden md:block" aria-hidden="true">
+    <svg class="globe-svg w-full h-full" viewBox="0 0 360 360" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="180" cy="180" r="179" stroke="#9ca3af" stroke-opacity="0.4" />
+      <circle cx="180" cy="180" r="150" stroke="#9ca3af" stroke-opacity="0.3" />
+      <circle cx="180" cy="180" r="120" stroke="#9ca3af" stroke-opacity="0.25" />
+      <circle cx="180" cy="180" r="90" stroke="#9ca3af" stroke-opacity="0.2" />
+      <circle cx="180" cy="180" r="60" stroke="#9ca3af" stroke-opacity="0.15" />
+      <circle cx="180" cy="180" r="30" stroke="#9ca3af" stroke-opacity="0.1" />
+      <!-- Latitude lines -->
+      <path stroke="#9ca3af" stroke-opacity="0.12" d="M20 120c80 0 120 240 240 0" />
+      <path stroke="#9ca3af" stroke-opacity="0.12" d="M20 240c80 0 120-240 240 0" />
+    </svg>
+    
+    <div class="node" style="top: 14%; left: 49%;" title="HTML5 Node">
+      <img src="https://placehold.co/48x24/222/eee?text=HTML5" alt="Icon symbolizing HTML5 technology block, rectangular grey block with text 'HTML5' in white" onerror="this.style.display='none'" />
+    </div>
+    <div class="node" style="top: 38%; left: 15%;" title="CSS3 Node">
+      <img src="https://placehold.co/48x24/334455/dddddd?text=CSS3" alt="Icon representing CSS3 technology block, dark blue rectangular block with text 'CSS3' in light color" onerror="this.style.display='none'" />
+    </div>
+    <div class="node" style="top: 67%; left: 77%;" title="JavaScript Node">
+      <img src="https://placehold.co/48x24/f7df1e/000000?text=JS" alt="Yellow rectangular block with black JS text representing JavaScript technology" onerror="this.style.display='none'" />
+    </div>
+    <div class="node" style="top: 80%; left: 38%;" title="React Node">
+      <img src="https://placehold.co/48x24/61dafb/000000?text=React" alt="Bright blue rectangular block with React text symbolizing React library" onerror="this.style.display='none'" />
+    </div>
+  </div>
+
+
+  <!-- About Us Section -->
+  <section id="about" class="hidden section-container max-w-4xl mx-auto space-y-5">
+    <h2 class="text-3xl font-bold uppercase font-mono tracking-widest text-center">About Us</h2>
+    <p class="max-w-xl mx-auto text-gray-700">
+      We are a team of passionate developers dedicated to providing cutting-edge web development solutions. Our mission is to empower businesses with the tools they need to succeed online.
+    </p>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section id="portfolio" class="hidden section-container max-w-4xl mx-auto space-y-5">
+    <h2 class="text-3xl font-bold uppercase font-mono tracking-widest text-center">Portfolio</h2>
+    <div class="grid sm:grid-cols-2 md:grid-cols-3 gap-8 mt-8">
+      <article class="border rounded-lg shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer group">
+        <div class="h-48 bg-gradient-to-r from-indigo-400 to-purple-600 flex items-center justify-center">
+          <img src="https://placehold.co/320x192?text=Project+1" alt="Screenshot of Project 1 showcasing colorful user interface with graphs and charts" class="object-cover w-full h-full rounded-t-lg opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+        <div class="p-4 bg-white">
+          <h3 class="font-semibold mb-1 text-lg">Project One</h3>
+          <p class="text-gray-700 text-sm">A progressive web app for real-time analytics and insights.</p>
+        </div>
+      </article>
+      <article class="border rounded-lg shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer group">
+        <div class="h-48 bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
+          <img src="https://placehold.co/320x192?text=Project+2" alt="Screenshot of Project 2 with clean ecommerce platform interface in modern design" class="object-cover w-full h-full rounded-t-lg opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+        <div class="p-4 bg-white">
+          <h3 class="font-semibold mb-1 text-lg">Project Two</h3>
+          <p class="text-gray-700 text-sm">An ecommerce site with seamless user experience and fast performance.</p>
+        </div>
+      </article>
+      <article class="border rounded-lg shadow hover:shadow-lg transition-shadow duration-300 cursor-pointer group">
+        <div class="h-48 bg-gradient-to-r from-pink-400 to-rose-500 flex items-center justify-center">
+          <img src="https://placehold.co/320x192?text=Project+3" alt="Screenshot of Project 3 creative portfolio website with sleek typography and dark mode" class="object-cover w-full h-full rounded-t-lg opacity-90 group-hover:opacity-100 transition-opacity duration-300" />
+        </div>
+        <div class="p-4 bg-white">
+          <h3 class="font-semibold mb-1 text-lg">Project Three</h3>
+          <p class="text-gray-700 text-sm">A personal portfolio website with stunning visuals and animations.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Contact Form -->
+  <section id="contact" class="hidden section-container max-w-md mx-auto bg-white rounded shadow-lg p-8 mt-12">
+    <h2 class="text-2xl font-bold mb-6 font-mono uppercase tracking-widest text-center">Contact Us</h2>
+    <form id="contact-form" class="space-y-5" autocomplete="off" novalidate>
+      <div>
+        <label for="contact-name" class="block text-sm font-semibold mb-1">Name</label>
+        <input type="text" id="contact-name" name="contact-name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="contact-email" class="block text-sm font-semibold mb-1">Email</label>
+        <input type="email" id="contact-email" name="contact-email" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="contact-message" class="block text-sm font-semibold mb-1">Message</label>
+        <textarea id="contact-message" name="contact-message" rows="5" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+      </div>
+      <button type="submit" class="btn-primary w-full">Send Message</button>
+    </form>
+  </section>
+
+  <!-- Login Form -->
+  <section id="login" class="hidden section-container max-w-md mx-auto bg-white rounded shadow-lg p-8 mt-12">
+    <h2 class="text-2xl font-bold mb-6 font-mono uppercase tracking-widest text-center">Login</h2>
+    <form id="login-form" class="space-y-5" autocomplete="off" novalidate>
+      <div>
+        <label for="login-email" class="block text-sm font-semibold mb-1">Email</label>
+        <input type="email" id="login-email" name="login-email" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="login-password" class="block text-sm font-semibold mb-1">Password</label>
+        <input type="password" id="login-password" name="login-password" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+      <button type="submit" class="btn-primary w-full">Log In</button>
+    </form>
+  </section>
+
+  <!-- Sign Up Form -->
+  <section id="signup" class="hidden section-container max-w-md mx-auto bg-white rounded shadow-lg p-8 mt-12">
+    <h2 class="text-2xl font-bold mb-6 font-mono uppercase tracking-widest text-center">Sign Up</h2>
+    <form id="signup-form" class="space-y-5" autocomplete="off" novalidate>
+      <div>
+        <label for="signup-name" class="block text-sm font-semibold mb-1">Full Name</label>
+        <input type="text" id="signup-name" name="signup-name" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="signup-email" class="block text-sm font-semibold mb-1">Email</label>
+        <input type="email" id="signup-email" name="signup-email" required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+      </div>
+      <div>
+        <label for="signup-password" class="block text-sm font-semibold
